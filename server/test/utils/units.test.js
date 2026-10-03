@@ -8,6 +8,7 @@ const {
   smartRound,
   decimalsOf,
   formatValueWithStep,
+  formatCurrencyValue,
 } = require('../../utils/units');
 const { DEVICE_FEATURE_UNITS } = require('../../utils/constants');
 
@@ -277,5 +278,29 @@ describe('formatValueWithStep', () => {
     expect(formatValueWithStep(null, 0.0001)).to.equal(null);
     expect(formatValueWithStep(undefined, 0.0001)).to.equal(undefined);
     expect(formatValueWithStep('on', 0.0001)).to.equal('on');
+  });
+});
+
+describe('formatCurrencyValue', () => {
+  it('keeps the third decimal of a fuel price', () => {
+    expect(formatCurrencyValue(2.168)).to.equal(2.168);
+    expect(formatCurrencyValue(2.099)).to.equal(2.099);
+  });
+  it('keeps up to 4 decimals and never rounds to an integer from 1 upwards', () => {
+    expect(formatCurrencyValue(1234.56)).to.equal(1234.56);
+    expect(formatCurrencyValue(-12.34567)).to.equal(-12.3457);
+    expect(formatCurrencyValue(2.1)).to.equal(2.1);
+  });
+  it('keeps 4 significant digits under 1', () => {
+    expect(formatCurrencyValue(0.1734)).to.equal(0.1734);
+    expect(formatCurrencyValue(0.000123456)).to.equal(0.0001235);
+  });
+  it('strips float noise', () => {
+    expect(formatCurrencyValue(2.0990000000000002)).to.equal(2.099);
+    expect(formatCurrencyValue(0.10000000149011612)).to.equal(0.1);
+  });
+  it('returns non-numbers untouched', () => {
+    expect(formatCurrencyValue(null)).to.equal(null);
+    expect(formatCurrencyValue('on')).to.equal('on');
   });
 });

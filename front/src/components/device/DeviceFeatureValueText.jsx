@@ -6,9 +6,16 @@ import {
   DEVICE_FEATURE_TYPES,
   OPENING_SENSOR_STATE
 } from '../../../../server/utils/constants';
+import { formatCurrencyValue } from '../../../../server/utils/units';
 import withIntlAsProp from '../../utils/withIntlAsProp';
 
 const roundValue = value => Math.round(value * 10) / 10;
+
+// A price keeps its own digits: one decimal would turn a 1.699 EUR/L fuel price into 1.7.
+const displayValue = feature =>
+  feature.category === DEVICE_FEATURE_CATEGORIES.CURRENCY
+    ? formatCurrencyValue(feature.last_value)
+    : roundValue(feature.last_value);
 
 // Compact text rendering of a device feature's last value, used by widgets
 // that display a state inline (chips bar, scene status subtitle, house-view
@@ -34,7 +41,7 @@ const DeviceFeatureValueText = ({ feature, intl }) => {
   }
   return (
     <span>
-      {roundValue(feature.last_value)}
+      {displayValue(feature)}
       {feature.unit && (
         <span>
           {' '}
