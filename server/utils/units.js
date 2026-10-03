@@ -146,12 +146,13 @@ function formatValueWithStep(value, step) {
 
 /**
  * @description Display a money amount without losing the digits that carry it.
- * The smartRound display is built for sensor readings and cuts what a price needs: a 2.168 EUR/L
- * fuel price shows as 2.17, a 0.1734 EUR/kWh tariff as 0.173 and a 1234.56 EUR bill as
- * 1235. An amount of 1 and above therefore keeps up to 4 decimals, and a smaller one
- * (a tariff, a fraction of a crypto-currency) 4 significant digits — enough for any
- * price, while still stripping float noise. Trailing zeros are dropped like smartRound
- * does. Anything that is not a finite number is returned untouched.
+ * The smartRound display is built for sensor readings and cuts what a price needs: a
+ * 2.168 EUR/L fuel price shows as 2.17, a 0.1734 EUR/kWh tariff as 0.173 and a 1234.56 EUR
+ * bill as 1235. An amount of 1 and above therefore keeps up to 3 decimals (the precision of
+ * a pump price, without spreading a computed amount over more digits than anyone reads),
+ * and a smaller one (a tariff, a fraction of a crypto-currency) 4 significant digits.
+ * Float noise is still stripped and trailing zeros dropped, like smartRound does.
+ * Anything that is not a finite number is returned untouched.
  * @param {number} value - Amount to display.
  * @returns {number} The value to display.
  * @example
@@ -166,7 +167,7 @@ function formatCurrencyValue(value) {
   if (Math.abs(value) < 1) {
     return Number(value.toPrecision(4));
   }
-  return Number(value.toFixed(4));
+  return Number(value.toFixed(3));
 }
 
 /**

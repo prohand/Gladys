@@ -286,9 +286,10 @@ describe('formatCurrencyValue', () => {
     expect(formatCurrencyValue(2.168)).to.equal(2.168);
     expect(formatCurrencyValue(2.099)).to.equal(2.099);
   });
-  it('keeps up to 4 decimals and never rounds to an integer from 1 upwards', () => {
+  it('keeps up to 3 decimals and never rounds to an integer from 1 upwards', () => {
     expect(formatCurrencyValue(1234.56)).to.equal(1234.56);
-    expect(formatCurrencyValue(-12.34567)).to.equal(-12.3457);
+    expect(formatCurrencyValue(12.345678)).to.equal(12.346);
+    expect(formatCurrencyValue(-12.34567)).to.equal(-12.346);
     expect(formatCurrencyValue(2.1)).to.equal(2.1);
   });
   it('keeps 4 significant digits under 1', () => {
